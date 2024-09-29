@@ -1,0 +1,255 @@
+/* CSS updates */
+body,
+html {
+    margin: 0;
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+    background: radial-gradient(ellipse at bottom, #0d1d31 0%, #0c0d13 100%);
+    color: white;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    height: 100%;
+}
+
+#canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    pointer-events: none;
+    background: rgba(0, 0, 0, 0.4);
+}
+
+.container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+    box-sizing: border-box;
+}
+
+.main-title {
+    font-size: 3rem;
+    margin-bottom: 30px;
+    color: #00ff99;
+    text-shadow: 4px 4px 8px rgba(0, 255, 0, 0.7);
+    font-weight: 700;
+    letter-spacing: 2px;
+}
+
+.carousel {
+    width: 50%;
+    height: calc(80% - 80px); /* Adjust height to fit the screen minus the title */
+    position: relative;
+    margin: 0;
+    overflow: hidden;
+    border-radius: 15px;
+    box-shadow: 0 0 25px rgba(0, 213, 255, 0.6);
+    background: rgba(0, 0, 0, 0.8);
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.carousel-inner {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.6s ease-in-out;
+}
+
+.item {
+    flex: 1 0 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.content {
+    color: white;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.9));
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 25px rgba(0, 255, 238, 0.3);
+    transition: transform 0.3s, box-shadow 0.3s, background 0.3s;
+    text-align: center;
+}
+
+.content:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 30px rgba(0, 255, 0, 0.6);
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 1));
+}
+
+h2.name {
+    font-size: 2rem;
+    margin-bottom: 10px;
+    font-weight: 600;
+    text-shadow: 1px 1px 2px rgba(0, 255, 0, 0.5);
+}
+
+p.des {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+    line-height: 1.6;
+}
+
+button {
+    background-color: rgba(0, 0, 0, 0.9);
+    color: #00ffff;
+    border: 2px solid #00f2ff;
+    padding: 12px 24px;
+    cursor: pointer;
+    border-radius: 8px;
+    font-size: 16px;
+    margin-top: 15px;
+    transition: background-color 0.3s, transform 0.3s, border-color 0.3s;
+    position: relative;
+    overflow: hidden;
+}
+
+button::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 300%;
+    height: 300%;
+    background: rgba(0, 255, 0, 0.1);
+    transition: width 0.3s, height 0.3s, background-color 0.3s;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 0;
+}
+
+button:hover::before {
+    width: 0;
+    height: 0;
+    background-color: rgba(0, 255, 0, 0.3);
+}
+
+button:hover {
+    background-color: rgba(0, 255, 0, 0.1);
+    border-color: #00ffff;
+    transform: scale(1.1);
+    color: #00ff99;
+}
+
+.carousel-controls {
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    transform: translateY(-50%);
+}
+
+.carousel-controls button {
+    background: rgba(0, 0, 0, 0.6);
+    color: #ffffff;
+    border: none;
+    padding: 10px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.carousel-controls button:hover {
+    background: rgba(0, 0, 0, 0.8);
+}
+
+/* Stars CSS */
+
+.stars {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 120%;
+    transform: rotate(-45deg);
+}
+
+.star {
+    --star-color: #ffffff;
+    --star-tail-length: 6em;
+    --star-tail-height: 2px;
+    --star-width: calc(var(--star-tail-length) / 6);
+    --fall-duration: 9s;
+    --tail-fade-duration: var(--fall-duration);
+
+    position: absolute;
+    top: var(--top-offset);
+    left: 0;
+    width: var(--star-tail-length);
+    height: var(--star-tail-height);
+    color: var(--star-color);
+    background: linear-gradient(45deg, currentColor, transparent);
+    border-radius: 50%;
+    filter: drop-shadow(0 0 6px currentColor);
+    transform: translate3d(104em, 0, 0);
+    animation: fall var(--fall-duration) var(--fall-delay) linear infinite, tail-fade var(--tail-fade-duration) var(--fall-delay) ease-out infinite;
+}
+
+@keyframes fall {
+    to {
+        transform: translate3d(-30em, 0, 0);
+    }
+}
+
+@keyframes tail-fade {
+    0%, 50% {
+        width: var(--star-tail-length);
+        opacity: 1;
+    }
+
+    70%, 80% {
+        width: 0;
+        opacity: 0.4;
+    }
+
+    100% {
+        width: 0;
+        opacity: 0;
+    }
+}
+
+@keyframes blink {
+    50% {
+        opacity: 0.6;
+    }
+}
+
+/* Live Data Chart Position */
+.live-data-container {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 300px;
+    height: 200px;
+    background-color: rgba(0, 0, 0, 0.8);
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+    padding: 10px;
+    z-index: 10; /* Above other elements */
+}
+
+.live-data-container h2 {
+    color: #00ff99;
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+#wifiChart {
+    width: 100%;
+    height: 100%;
+}
