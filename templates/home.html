@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network Forensics Toolkit</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    <div class="live-data-container">
+        <h2>Live Data</h2>
+        <canvas id="wifiChart"></canvas>
+    </div>
+    <div class="container">
+        <h1 class="main-title">Network Analysis Tools</h1>
+        <div class="carousel">
+            <div class="carousel-inner">
+                <!-- Network Threat Detector -->
+                <div class="item">
+                    <div class="content">
+                        <h2 class="name">Network Threat Detector</h2>
+                        <p class="des">Detect threats in IP addresses.</p>
+                        <a href="{{ url_for('network_detect') }}"><button>Scan</button></a>
+                    </div>
+                </div>
+                
+                <!-- Capture Packets -->
+                <div class="item">
+                    <div class="content">
+                        <h2 class="name">Capture Packets</h2>
+                        <p class="des">Capture and save packets from a network interface.</p>
+                        <a href="{{ url_for('capture_packets_route') }}"><button>Capture</button></a>
+                    </div>
+                </div>
+
+                <!-- Upload PCAP -->
+                <div class="item">
+                    <div class="content">
+                        <h2 class="name">Upload PCAP</h2>
+                        <p class="des">Upload and analyze PCAP files.</p>
+                        <a href="{{ url_for('upload_pcap') }}"><button>Upload</button></a>
+                    </div>
+                </div>
+
+                <!-- Phishing Detector -->
+                <div class="item">
+                    <div class="content">
+                        <h2 class="name">Phishing Detector</h2>
+                        <p class="des">Check if a URL is potentially malicious or a phishing attempt.</p>
+                        <a href="{{ url_for('phishing_detector') }}"><button>Check URL</button></a>
+                    </div>
+                </div>
+
+                <!-- Nmap Scan -->
+                <div class="item">
+                    <div class="content">
+                        <h2 class="name">Nmap Scan</h2>
+                        <p class="des">Discover and list services running on a network.</p>
+                        <a href="{{ url_for('service_discovery') }}"><button>Scan</button></a>
+                    </div>
+                </div>
+
+                <!-- Firewall -->
+                <div class="item">
+                    <div class="content">
+                        <h2 class="name">Firewall</h2>
+                        <p class="des">Manage firewall rules for IPs and ports.</p>
+                        <a href="{{ url_for('firewall') }}"><button>Manage</button></a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Carousel Controls -->
+            <div class="carousel-controls">
+                <button class="prev"><i class="fa fa-chevron-left"></i></button>
+                <button class="next"><i class="fa fa-chevron-right"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Initialize Chart.js for Live Data
+        const ctx = document.getElementById('wifiChart').getContext('2d');
+        const wifiChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [], // Will be filled dynamically
+                datasets: [{
+                    label: 'Wi-Fi Signal Strength',
+                    data: [], // Will be filled dynamically
+                    backgroundColor: 'rgba(0, 119, 190, 0.5)',
+                    borderColor: 'rgba(0, 119, 190, 1)',
+                    borderWidth: 2,
+                    fill: true,
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        min: -100,
+                        max: 0,
+                        ticks: {
+                            callback: function(value) {
+                                return value + ' dBm'; // Display dBm on Y-axis
+                            }
+                        }
+                    }
+                },
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+
+        // Update chart with data (use your update function here)
+        function updateChart() {
+            fetch('/live-data')
+                .then(response => response.json())
+                .then(data => {
+                    wifiChart.data.labels = data.map(item => new Date(item.time * 1000).toLocaleTimeString());
+                    wifiChart.data.datasets[0].data = data.map(item => item.signal_strength);
+
+                    wifiChart.data.datasets[0].backgroundColor = data.map(item => {
+                        return item.signal_strength < -70 ? 'rgba(255, 0, 0, 0.5)' : 'rgba(0, 119, 190, 0.5)';
+                    });
+                    wifiChart.data.datasets[0].borderColor = data.map(item => {
+                        return item.signal_strength < -70 ? 'rgba(255, 0, 0, 1)' : 'rgba(0, 119, 190, 1)';
+                    });
+
+                    if (wifiChart.data.labels.length > 10) {
+                        wifiChart.data.labels.shift();
+                        wifiChart.data.datasets[0].data.shift();
+                        wifiChart.data.datasets[0].backgroundColor.shift();
+                        wifiChart.data.datasets[0].borderColor.shift();
+                    }
+
+                    wifiChart.update();
+                })
+                .catch(error => {
+                    console.error('Error fetching live data:', error);
+                });
+        }
+
+        setInterval(updateChart, 2000); // Update every 2 seconds
+    </script>
+</body>
+</html>

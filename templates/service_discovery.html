@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>N map scan</title>
+    <style>
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin-top: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input, button {
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #555;
+            border-radius: 4px;
+            background-color: #333;
+            color: #fff;
+        }
+        button {
+            background-color: #0f0;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0c0;
+        }
+        pre {
+            background-color: #333;
+            padding: 10px;
+            border: 1px solid #555;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Network Service Discovery</h1>
+        <form method="post">
+            <div class="form-group">
+                <label for="target">Target IP/Hostname:</label>
+                <input type="text" name="target" id="target" placeholder="e.g., 192.168.0.1">
+            </div>
+            <button type="submit">Discover Services</button>
+        </form>
+        {% if scan_result %}
+            <h2>Discovered Services</h2>
+            <pre>{{ scan_result }}</pre>
+        {% endif %}
+        <a href="{{ url_for('home') }}">Back to Home</a>
+    </div>
+</body>
+</html>

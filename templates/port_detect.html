@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Port Detection</title>
+    <style>
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin-top: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input, button {
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #555;
+            border-radius: 4px;
+            background-color: #333;
+            color: #fff;
+        }
+        button {
+            background-color: #0f0;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0c0;
+        }
+        .flash {
+            background-color: #444;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            border: 1px solid #666;
+        }
+        .flash.success {
+            background-color: #0c0;
+            border-color: #0a0;
+        }
+        .flash.error {
+            background-color: #f00;
+            border-color: #c00;
+            color: #fff;
+        }
+        .flash.warning {
+            background-color: #ff0;
+            color: #000;
+            border-color: #cc0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #555;
+        }
+        th {
+            background-color: #333;
+        }
+        tr:nth-child(even) {
+            background-color: #444;
+        }
+        tr:nth-child(odd) {
+            background-color: #333;
+        }
+        a {
+            color: #0f0;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Port Detection</h1>
+        <form method="post">
+            <div class="form-group">
+                <label for="target">Target IP/Hostname:</label>
+                <input type="text" name="target" id="target" required>
+            </div>
+            <button type="submit" name="start_scan">Start Scan</button>
+        </form>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash {{ messages[0][0] }}">
+                    {% for category, message in messages %}
+                        <p>{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        {% if scan_result %}
+            <h2>Scan Results</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Protocol</th>
+                        <th>Port</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for line in scan_result.splitlines() %}
+                        {% if line %}
+                            {% set parts = line.split(' ') %}
+                            <tr>
+                                <td>{{ parts[0] }}</td>
+                                <td>{{ parts[1] }}</td>
+                                <td>{{ parts[2] }}</td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+        
+        <a href="{{ url_for('home') }}">Back to Home</a>
+    </div>
+</body>
+</html>

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network Detection</title>
+    <style>
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin-top: 20px;
+        }
+        .home-button {
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: green;
+            color: white;
+            padding: 5px 10px;
+            font-size: 0.8rem; /* Smaller font size */
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        .home-button:hover {
+            background-color: darkgreen;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input, select, button {
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #555;
+            border-radius: 4px;
+            background-color: #333;
+            color: #fff;
+        }
+        button {
+            background-color: #0f0;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0c0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Network Detection</h1>
+        <form method="post">
+            <div class="form-group">
+                <label for="interface">Select Network Interface:</label>
+                <select name="interface" id="interface">
+                    {% for iface in interfaces %}
+                        <option value="{{ iface }}">{{ iface }}</option>
+                    {% else %}
+                        <option value="">No interfaces available</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" name="start_analysis">Start Analysis</button>
+            <button type="submit" name="stop_analysis">Stop Analysis</button>
+            <button type="submit" name="save_pdf">Save as PDF</button>
+        </form>
+        <h2>Packet Count per IP</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Source IP</th>
+                    <th>Destination IP</th>
+                    <th>Protocol</th>
+                    <th>Count</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for key, count in packet_count.items() %}
+                    <tr>
+                        <td>{{ key[0] }}</td>
+                        <td>{{ key[1] }}</td>
+                        <td>{{ key[2] }}</td>
+                        <td>{{ count }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <h2>Detected Threats</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>IP Address</th>
+                    <th>Threats</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ip, threats in threats.items() %}
+                    <tr>
+                        <td>{{ ip }}</td>
+                        <td>
+                            {% for threat in threats %}
+                                <p><strong>Threat:</strong> {{ threat[0] }}<br>
+                                <strong>Mitigation:</strong> {{ threat[1] }}</p>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <a href="{{ url_for('home') }}">Back to Home</a>
+    </div>
+</body>
+</html>
